@@ -1,6 +1,6 @@
 // ~~~ Map Start ~~~ //
 
-var destinationListEl = $('#timeSpentUl')
+var destinationUnorderedList = $('#timeSpentUl')
 var formBtn = document.getElementById('formBtn');
 const directionsService = new google.maps.DirectionsService();
 const directionsRenderer = new google.maps.DirectionsRenderer();
@@ -41,78 +41,87 @@ function calcRoute(directionsService, directionsRenderer) {
       output.innerHTML = "<div> From: " + document.getElementById('from').value + ".<br /> To: " + document.getElementById('to').value + ". <br /> Driving Distance " + result.routes[0].legs[0].distance.text + ".<br /> Duration " + result.routes[0].legs[0].duration.text + ". </div>";
       
       directionsRenderer.setDirections(result);
-      var tripInformation = {
-        to: document.getElementById('to').value,
-        from: document.getElementById('from').value,
-        duration: result.routes[0].legs[0].duration.text,
-        length: result.routes[0].legs[0].distance.text
-      };
 
-
-      // var destinationTo = document.getElementById('to').value
-      // var destinationFrom = document.getElementById('from').value
-      // var tripDuration = result.routes[0].legs[0].duration.text
-      // var tripLength =  result.routes[0].legs[0].distance.text
-      // if (!destinationTo) {
-      //   console.log('No destination specified');
-      //   return;
-      // }
-      var destinationListBoxEl = $(
-        '<li class="flex-row justify-space-between align-center p-2 bg-light text-dark">'
+      var destinationListItem = $(
+        '<li class="flex-row justify-space-between locationList align-center p-2 bg-light text-dark">'
         );
-        destinationListBoxEl.text(tripInformation.from + tripInformation.to + tripInformation.length + tripInformation.duration);
-      
+      var from = document.getElementById('from').value
+      var to = document.getElementById('to').value
+      var duration = result.routes[0].legs[0].duration.text;
+      var distance = result.routes[0].legs[0].distance.text;
+
+// Format the list item text using HTML tags
+      const formattedText = `
+      <p>From: ${from}<br />To: ${to}<br />Duration: ${duration}<br />Distance: ${distance}</p>`;
+
+// Set the formatted text as the destination list item's HTML content
+      destinationListItem.html(formattedText);
+
         // add delete button to remove destination from list
-        destinationListBoxEl.append(
+        destinationListItem.append(
           '<button class="btn btn-danger btn-small delete-item-btn">Remove</button>'
           );
-          // print to the page
-          destinationListEl.append(destinationListBoxEl);
-    } else {
-      directionsRenderer.setDirections({routes: []});
-      map.setCenter(center);
-      output.innerHTML = "<p>Can't drive there mate.</p>"
-    }
-  });
-}
-
-// Auto Fill //
-const input1 = document.getElementById('from');
-const input2 = document.getElementById('to');
-const autocompleteOptions = {
-  fields: ["formatted_address", "geometry", "name"],
-  strictBounds: false,
-  types: ["geocode", "establishment" ]
-}
-
-
-const autocomplete1 = new google.maps.places.Autocomplete(input1, autocompleteOptions);
-const autocomplete2 = new google.maps.places.Autocomplete(input2, autocompleteOptions);
-
-  //This function serves to remove a list item from the unordered list
-    function handleRemoveItem(event) {
-      // convert button we pressed (`event.target`) to a jQuery DOM object
-      var removeBtnClicked = $(event.target);
-      // get the parent `<li>` element from the button we pressed and remove it
-      removeBtnClicked.parent('li').remove();
-    }
-    // use event delegation on the `destinationListEL` to listen for click on any element with a class of `delete-item-btn`
-    destinationListEl.on('click', '.delete-item-btn', handleRemoveItem);
-    
-    
-    
-    // ~~~ Map End ~~~ Recommended Start ~~~ Experimental //
-    
-    // autocomplete2.addListener('place_changed', searchNearbyPlaces);
-    
-    // document.getElementById('recommendOptions').onchange = searchNearbyPlaces
-    
-    // function searchNearbyPlaces() {
-      //   document.getElementById('places').innerHTML = ''
-      //   // Get the place details from the autocomplete object.
-      //   var place = autocomplete2.getPlace();
-      //   console.log(place)
-      
+          destinationUnorderedList.append(destinationListItem);
+          
+          
+        } else {
+          directionsRenderer.setDirections({routes: []});
+          map.setCenter(center);
+          output.innerHTML = "<p>Can't drive there mate.</p>"
+        }
+      });
+        }
+        // Auto Fill //
+        const input1 = document.getElementById('from');
+        const input2 = document.getElementById('to');
+        const autocompleteOptions = {
+          fields: ["formatted_address", "geometry", "name"],
+          strictBounds: false,
+          types: ["geocode", "establishment" ]
+        }
+        
+        
+        const autocomplete1 = new google.maps.places.Autocomplete(input1, autocompleteOptions);
+        const autocomplete2 = new google.maps.places.Autocomplete(input2, autocompleteOptions);
+        
+        //This function serves to remove a list item from the unordered list
+        function handleRemoveItem(event) {
+          // convert button we pressed (`event.target`) to a jQuery DOM object
+          var removeBtnClicked = $(event.target);
+          // get the parent `<li>` element from the button we pressed and remove it
+          removeBtnClicked.parent('li').remove();
+        }
+        // use event delegation on the `destinationListEL` to listen for click on any element with a class of `delete-item-btn`
+        destinationUnorderedList.on('click', '.delete-item-btn', handleRemoveItem);
+        
+        
+        
+        // ~~~ Map End ~~~ Recommended Start ~~~ Experimental //
+        
+        //   function addTripLength(){
+          //     let sum = 0;
+          //     const trips = $(".locationList")
+          //     for (var i = 0; i<trips.length; i++) {
+            //       const trip= trips[i];
+            //       const tripLength = parseInt(tripInformation.duration.textContent);
+            //       if (!isNaN(trip)) {
+              //         sum += trip;
+              //     }
+              //   }
+              //   console.log(`The total sum of the list item values is ${sum}.`);
+              // }
+              
+              // addTripLength();
+        // autocomplete2.addListener('place_changed', searchNearbyPlaces);
+        
+        // document.getElementById('recommendOptions').onchange = searchNearbyPlaces
+        
+        // function searchNearbyPlaces() {
+          //   document.getElementById('places').innerHTML = ''
+          //   // Get the place details from the autocomplete object.
+          //   var place = autocomplete2.getPlace();
+          //   console.log(place)
+          
       //   // Create a map centered at the location entered in the autocomplete field.
       //   map = new google.maps.Map(document.getElementById('googleMap'), {
         //     center: place.geometry.location,
