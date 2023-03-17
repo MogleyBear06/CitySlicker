@@ -4,7 +4,7 @@ var destinationListEl = $('#timeSpentUl')
 var formBtn = document.getElementById('formBtn');
 const directionsService = new google.maps.DirectionsService();
 const directionsRenderer = new google.maps.DirectionsRenderer();
-
+const output = document.querySelector('#output')
 // Creates the map function, fragile do not touch //
 function initMap() {
   const map = new google.maps.Map(document.getElementById("googleMap"), {
@@ -27,7 +27,7 @@ function initMap() {
 }
 
 
-// Calculates and display travel distance and time, fragile do not touch//
+// Calculates and display travel distance and time to the output container and the unordered list container, fragile do not touch//
 function calcRoute(directionsService, directionsRenderer) {
   let selectedMode = document.getElementById("mode").value;
   let request = {
@@ -40,7 +40,25 @@ function calcRoute(directionsService, directionsRenderer) {
     if (status == google.maps.DirectionsStatus.OK) {
       const output = document.querySelector('#output')
       output.innerHTML = "<div> From: " + document.getElementById('from').value + ".<br /> To: " + document.getElementById('to').value + ". <br /> Driving Distance " + result.routes[0].legs[0].distance.text + ".<br /> Duration " + result.routes[0].legs[0].duration.text + ". </div>";
+      
       directionsRenderer.setDirections(result);
+      var destinationTo = "From: " + document.getElementById('from').value + ".<br /> To: " + document.getElementById('to').value + ". <br /> Driving Distance " + result.routes[0].legs[0].distance.text + ".<br /> Duration " + result.routes[0].legs[0].duration.text;
+      
+      if (!destinationTo) {
+        console.log('No destination specified');
+        return;
+      }
+      var destinationListBoxEl = $(
+        '<li class="flex-row justify-space-between align-center p-2 bg-light text-dark">'
+        );
+        destinationListBoxEl.text(destinationTo);
+      
+        // add delete button to remove destination from list
+        destinationListBoxEl.append(
+          '<button class="btn btn-danger btn-small delete-item-btn">Remove</button>'
+          );
+          // print to the page
+          destinationListEl.append(destinationListBoxEl);
     } else {
       directionsRenderer.setDirections({routes: []});
       map.setCenter(center);
@@ -62,39 +80,13 @@ const autocompleteOptions = {
 const autocomplete1 = new google.maps.places.Autocomplete(input1, autocompleteOptions);
 const autocomplete2 = new google.maps.places.Autocomplete(input2, autocompleteOptions);
 
-
-// Adds destination address to unordered list
-function handleFormSubmit(event) {
-  
-  var destinationTo = $('input[name="GoingTo"]').val();
-  
-  if (!destinationTo) {
-    console.log('No destination specified');
-    return;
-  }
-  
-  var destinationListBoxEl = $(
-    '<li class="flex-row justify-space-between align-center p-2 bg-light text-dark">'
-    );
-    destinationListBoxEl.text(destinationTo);
-    
-    // add delete button to remove destination from list
-    destinationListBoxEl.append(
-      '<button class="btn btn-danger btn-small delete-item-btn">Remove</button>'
-      );
-      // print to the page
-      destinationListEl.append(destinationListBoxEl);
-      
-    }
     
     function handleRemoveItem(event) {
       // convert button we pressed (`event.target`) to a jQuery DOM object
       var removeBtnClicked = $(event.target);
-      
       // get the parent `<li>` element from the button we pressed and remove it
       removeBtnClicked.parent('li').remove();
     }
-    
     // use event delegation on the `destinationListEL` to listen for click on any element with a class of `delete-item-btn`
     destinationListEl.on('click', '.delete-item-btn', handleRemoveItem);
     
