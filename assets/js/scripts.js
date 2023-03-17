@@ -22,7 +22,6 @@ function initMap() {
   document.getElementById("formBtn").addEventListener("click", function(event){
     event.preventDefault();
     calcRoute(directionsService, directionsRenderer);
-    handleFormSubmit();
   });
 }
 
@@ -42,16 +41,26 @@ function calcRoute(directionsService, directionsRenderer) {
       output.innerHTML = "<div> From: " + document.getElementById('from').value + ".<br /> To: " + document.getElementById('to').value + ". <br /> Driving Distance " + result.routes[0].legs[0].distance.text + ".<br /> Duration " + result.routes[0].legs[0].duration.text + ". </div>";
       
       directionsRenderer.setDirections(result);
-      var destinationTo = "From: " + document.getElementById('from').value + ".<br /> To: " + document.getElementById('to').value + ". <br /> Driving Distance " + result.routes[0].legs[0].distance.text + ".<br /> Duration " + result.routes[0].legs[0].duration.text;
-      
-      if (!destinationTo) {
-        console.log('No destination specified');
-        return;
-      }
+      var tripInformation = {
+        to: document.getElementById('to').value,
+        from: document.getElementById('from').value,
+        duration: result.routes[0].legs[0].duration.text,
+        length: result.routes[0].legs[0].distance.text
+      };
+
+
+      // var destinationTo = document.getElementById('to').value
+      // var destinationFrom = document.getElementById('from').value
+      // var tripDuration = result.routes[0].legs[0].duration.text
+      // var tripLength =  result.routes[0].legs[0].distance.text
+      // if (!destinationTo) {
+      //   console.log('No destination specified');
+      //   return;
+      // }
       var destinationListBoxEl = $(
         '<li class="flex-row justify-space-between align-center p-2 bg-light text-dark">'
         );
-        destinationListBoxEl.text(destinationTo);
+        destinationListBoxEl.text(tripInformation.from + tripInformation.to + tripInformation.length + tripInformation.duration);
       
         // add delete button to remove destination from list
         destinationListBoxEl.append(
@@ -80,7 +89,7 @@ const autocompleteOptions = {
 const autocomplete1 = new google.maps.places.Autocomplete(input1, autocompleteOptions);
 const autocomplete2 = new google.maps.places.Autocomplete(input2, autocompleteOptions);
 
-    
+  //This function serves to remove a list item from the unordered list
     function handleRemoveItem(event) {
       // convert button we pressed (`event.target`) to a jQuery DOM object
       var removeBtnClicked = $(event.target);
