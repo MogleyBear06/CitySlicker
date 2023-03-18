@@ -162,6 +162,56 @@ function calcRoute(directionsService, directionsRenderer) {
 //     cell2.innerHTML = `<img width="300" height="300" src="${photoUrl}"/>`
 //   }
 // }
+// Import the dayjs library
+// import dayjs from 'dayjs';
 
+// // Define the trip information as an array of objects
+// const tripInformation = [
+//   {
+//     from: 'New York',
+//     to: 'Los Angeles',
+//     duration: '6 hours',
+//     distance: '2,475 miles',
+//     startTime: dayjs('2023-03-20 8:00 AM')
+//   },
+//   {
+//     from: 'Los Angeles',
+//     to: 'San Francisco',
+//     duration: '1.5 hours',
+//     distance: '383 miles',
+//     startTime: null
+//   },
+//   {
+//     from: 'San Francisco',
+//     to: 'Seattle',
+//     duration: '2.5 hours',
+//     distance: '808 miles',
+//     startTime: null
+//   }
+// ];
+
+// // Get the unordered list element where the travel itinerary will be displayed
+// const itineraryList = document.querySelector('ul');
+
+// // Loop through each leg of the trip and create a new HTML element to display the trip information
+// tripInformation.forEach((leg, index) => {
+//   const destinationListItem = document.createElement('li');
+
+//   // Set the start time for the current leg of the trip
+//   if (index === 0) {
+//     // If this is the first leg of the trip, use the start time from the trip information object
+//     leg.startTime = leg.startTime;
+//   } else {
+//     // Otherwise, use the end time of the previous leg of the trip
+//     leg.startTime = tripInformation[index - 1].endTime;
+//   }
+
+//   // Calculate the end time for the current leg of the trip
+//   leg.endTime = leg.startTime.add(leg.duration, 'hour');
+
+//   destinationListItem.textContent = `${leg.from} to ${leg.to}, ${leg.duration}, ${leg.distance}, starting at ${leg.startTime.format('h:mm A')} and ending at ${leg.endTime.format('h:mm A')}`;
+
+//   itineraryList.appendChild(destinationListItem);
+// });
 //Starts it all//
 window.onload = initMap();
