@@ -26,7 +26,7 @@ function initMap() {
 }
 
 
-// Calculates and display travel distance and time to the output container and the unordered list container, fragile do not touch//
+// Calculates and display travel distance and time to the output container and the timeSpentUl, fragile do not touch//
 function calcRoute(directionsService, directionsRenderer) {
   let selectedMode = document.getElementById("mode").value;
   let request = {
@@ -41,18 +41,37 @@ function calcRoute(directionsService, directionsRenderer) {
       output.innerHTML = "<div> From: " + document.getElementById('from').value + ".<br /> To: " + document.getElementById('to').value + ". <br /> Driving Distance " + result.routes[0].legs[0].distance.text + ".<br /> Duration " + result.routes[0].legs[0].duration.text + ". </div>";
       
       directionsRenderer.setDirections(result);
-
+      
       var destinationListItem = $(
         '<li class="flex-row justify-space-between locationList align-center p-2 bg-light text-dark">'
         );
-      var from = document.getElementById('from').value
-      var to = document.getElementById('to').value
-      var duration = result.routes[0].legs[0].duration.text;
-      var distance = result.routes[0].legs[0].distance.text;
+        var from = document.getElementById('from').value
+        var to = document.getElementById('to').value
+        var duration = result.routes[0].legs[0].duration.text;
+        var distance = result.routes[0].legs[0].distance.text;
+        var currentTime = dayjs().format('h:mm A');
+        if(duration.length > 8){
+          var timeArray = duration.split(" ")
+          console.log(timeArray); 
+          var hours = parseInt(timeArray[0]);
+          var minutes = parseInt(timeArray[2]);
+          var hourMinutes = hours*60
+          minutes=hourMinutes+minutes
+          var minutesAdded = dayjs().add(minutes, "minute").format("h:mm A")
+          var hoursAdded = dayjs().add(hours, "hour").format("h:mm A")
+          console.log(minutesAdded);
+          var arrivalTime = minutesAdded;
+        } else{
+          var travelTime = parseInt(duration)
+          var arrivalTime = dayjs().add(travelTime, "minute").format("h:mm A");
 
+        }
+        console.log(travelTime);
+        // var arrivalTime = durationcurrentTime.add(result.routes[0].legs[0].duration.val());
+console.log(result);
 // Format the list item text using HTML tags
       const formattedText = `
-      <p>From: ${from}<br />To: ${to}<br />Duration: ${duration}<br />Distance: ${distance}</p>`;
+      <p>From: ${from}<br />To: ${to}<br />Duration: ${duration}<br />Distance: ${distance}<br />Current Time: ${currentTime}<br />Arrival Time: ${arrivalTime}</p>`;
 
 // Set the formatted text as the destination list item's HTML content
       destinationListItem.html(formattedText);
